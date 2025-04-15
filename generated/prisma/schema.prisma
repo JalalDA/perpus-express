@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Mahasiswa {
+  id          String       @id @default(uuid())
+  nama        String
+  isActive    Boolean      @default(true)
+  jurusan     String
+  nim         String       @unique
+  cretedAt    DateTime     @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime     @default(now()) @updatedAt
+  peminjamans Peminjaman[]
+}
+
+model Buku {
+  id          String             @id @default(uuid())
+  judul       String
+  penerbit    String?
+  tahunTerbit Int?
+  penulis     String?
+  rakId       String
+  stok        Int
+  cretedAt    DateTime           @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime           @default(now()) @updatedAt
+  rak         Rak                @relation(fields: [rakId], references: [id])
+  details     DetailPeminjaman[]
+}
+
+model Rak {
+  id        String    @id @default(uuid())
+  namaRak   String
+  lokasi    String
+  cretedAt  DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime  @default(now()) @updatedAt
+  bukuList  Buku[]
+}
+
+model Peminjaman {
+  id             String              @id @default(uuid())
+  mahasiswaId    String
+  tanggalPinjam  DateTime
+  tanggalKembali DateTime?
+  cretedAt       DateTime            @default(now())
+  deletedAt      DateTime?
+  updatedAt      DateTime            @default(now()) @updatedAt
+  details        DetailPeminjaman[]
+  histories      HistoryPeminjaman[]
+  mahasiswa      Mahasiswa           @relation(fields: [mahasiswaId], references: [id])
+}
+
+model DetailPeminjaman {
+  id           String     @id @default(uuid())
+  peminjamanId String
+  bukuId       String
+  cretedAt     DateTime   @default(now())
+  deletedAt    DateTime?
+  updatedAt    DateTime   @default(now()) @updatedAt
+  buku         Buku       @relation(fields: [bukuId], references: [id])
+  peminjaman   Peminjaman @relation(fields: [peminjamanId], references: [id])
+}
+
+model HistoryPeminjaman {
+  id            String     @id @default(uuid())
+  peminjamanId  String
+  status        String
+  tanggalStatus DateTime
+  cretedAt      DateTime   @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime   @default(now()) @updatedAt
+  peminjaman    Peminjaman @relation(fields: [peminjamanId], references: [id])
+}
