@@ -13,8 +13,8 @@
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/username/express-prisma-postgres-ts.git
-cd express-prisma-postgres-ts
+git clone https://github.com/JalalDA/perpus-express
+cd perpus-express
 
 2. **Install dependencies:**
 
